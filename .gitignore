@@ -1,0 +1,51 @@
+# Based on gitignore.io templates for Node, macOS, and VS Code.
+
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build output
+dist/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Test and compiler output
+coverage/
+.nyc_output/
+*.lcov
+*.tsbuildinfo
+
+# Tool caches
+.cache/
+.parcel-cache/
+.vite/
+.eslintcache
+
+# Local agent/design artifacts
+.codex/
+.lazyweb/
+.playwright-mcp/
+/*.png
+
+# OS and editor files
+.DS_Store
+._*
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Auto-generated Manus version file
+client/public/__manus__/version.json
