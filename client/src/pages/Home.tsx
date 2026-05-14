@@ -11,7 +11,10 @@ import { toast } from "sonner";
 
 const MAX_CHARS = 500;
 const HERO_BG = "https://d2xsxph8kpxj0f.cloudfront.net/310519663648376380/2SRdrV75XsmtRYhUoQfvux/hero-fun-VBuQr4WrVZE2Gw6GUrPhEw.webp";
-const SITE_URL = "https://madchumbeop-2srdrv75.manus.space";
+
+function getSiteUrl() {
+  return import.meta.env.VITE_SITE_URL || window.location.origin;
+}
 
 const TYPE_STYLE: Record<string, { bg: string; dot: string; badge: string; badgeText: string; highlight: string }> = {
   "맞춤법":   { bg: "#FFF3B0", dot: "#FFB800", badge: "#FFE234", badgeText: "#7a4800", highlight: "#FFE234" },
@@ -49,6 +52,7 @@ export default function Home() {
   const [isDownloading, setIsDownloading] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
   const resultPanelRef = useRef<HTMLDivElement>(null);
+  const siteUrl = getSiteUrl();
 
   const handleCheck = useCallback(() => {
     if (!inputText.trim()) {
@@ -98,14 +102,14 @@ export default function Home() {
   const handleShare = useCallback(async () => {
     if (!result) return;
     const shareText = `맏춤법 검사기\n\n${result.wrongText}`;
-    const fallbackText = `${shareText}\n\n${SITE_URL}`;
+    const fallbackText = `${shareText}\n\n${siteUrl}`;
 
     if (navigator.share) {
       try {
         await navigator.share({
           title: "맏춤법 검사기",
           text: shareText,
-          url: SITE_URL,
+          url: siteUrl,
         });
         return;
       } catch (error) {
@@ -117,7 +121,7 @@ export default function Home() {
     setCopied(true);
     toast.success("공유할 내용을 복사했어요");
     setTimeout(() => setCopied(false), 2000);
-  }, [result]);
+  }, [result, siteUrl]);
 
   // ── 카드 이미지 다운로드 ──
   const handleDownloadCard = useCallback(async () => {
@@ -552,7 +556,7 @@ export default function Home() {
                 맏춤법 검사기
               </span>
               <span style={{ fontFamily: "'Noto Sans KR', sans-serif", fontSize: "0.65rem", color: "#746b60" }}>
-                {SITE_URL.replace("https://", "")}
+                {siteUrl.replace(/^https?:\/\//, "")}
               </span>
             </div>
           </div>
