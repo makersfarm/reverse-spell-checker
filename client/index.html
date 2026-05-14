@@ -4,13 +4,79 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>맏춤법 검사기</title>
+    <meta
+      name="description"
+      content="문장을 넣으면 자주 헷갈리는 맞춤법, 띄어쓰기, 표준어, 외래어 표현을 바꿔 보여주는 리버스 맞춤법 검사기."
+    />
+    <meta name="robots" content="index,follow" />
+    <meta name="theme-color" content="#FFFBF0" />
+    <link rel="canonical" href="https://reverse-spell-checker.vercel.app/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="ko_KR" />
+    <meta property="og:site_name" content="리버스 맞춤법 검사기" />
+    <meta property="og:title" content="맏춤법 검사기" />
+    <meta
+      property="og:description"
+      content="자주 헷갈리는 표현을 문장 안에서 바로 확인하고, 결과를 복사하거나 이미지로 저장해보세요."
+    />
+    <meta property="og:url" content="https://reverse-spell-checker.vercel.app/" />
+    <meta property="og:image" content="https://reverse-spell-checker.vercel.app/og-image.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="맏춤법 검사기" />
+    <meta
+      name="twitter:description"
+      content="자주 헷갈리는 표현을 문장 안에서 바로 확인하고, 결과를 복사하거나 이미지로 저장해보세요."
+    />
+    <meta name="twitter:image" content="https://reverse-spell-checker.vercel.app/og-image.svg" />
+    <meta name="twitter:image:alt" content="맏춤법 검사기 예시 화면" />
+    <meta name="application-name" content="맏춤법 검사기" />
+    <meta name="apple-mobile-web-app-title" content="맏춤법 검사기" />
+    <link rel="manifest" href="/site.webmanifest" />
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231a1a1a'/%3E%3Ctext x='32' y='42' text-anchor='middle' font-size='34' font-family='Arial,sans-serif' font-weight='700' fill='%23FFE234'%3ER%3C/text%3E%3C/svg%3E" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "맏춤법 검사기",
+        "alternateName": "리버스 맞춤법 검사기",
+        "url": "https://reverse-spell-checker.vercel.app/",
+        "applicationCategory": "UtilitiesApplication",
+        "operatingSystem": "Web",
+        "inLanguage": "ko-KR",
+        "description": "문장을 넣으면 자주 헷갈리는 맞춤법, 띄어쓰기, 표준어, 외래어 표현을 바꿔 보여주는 리버스 맞춤법 검사기.",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "KRW"
+        }
+      }
+    </script>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <main>
+        <h1>맏춤법 검사기</h1>
+        <p>
+          리버스 맞춤법 검사기는 문장을 넣으면 자주 헷갈리는 맞춤법, 띄어쓰기, 표준어,
+          외래어 표현을 문장 안에서 바로 보여주는 한국어 웹 도구입니다.
+        </p>
+        <section aria-label="예시">
+          <h2>예시</h2>
+          <ul>
+            <li>돼요 → 되요</li>
+            <li>며칠 → 몇일</li>
+            <li>콘텐츠 → 컨텐츠</li>
+            <li>액세서리 → 악세사리</li>
+          </ul>
+        </section>
+      </main>
+    </div>
+    <noscript>
+      맏춤법 검사기는 브라우저에서 실행되는 웹 도구입니다. 문장을 검사하려면 JavaScript를 켜주세요.
+    </noscript>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

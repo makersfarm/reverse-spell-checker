@@ -40,6 +40,13 @@ export const reverseRuleFixtures: ReverseRuleFixture[] = [
     expectedTypes: ["맞춤법", "표준어", "표준어"],
   },
   {
+    name: "loanword rules",
+    input: "콘텐츠 메시지 액세서리 케이크를 준비했다.",
+    expectedWrongWords: ["컨텐츠", "메세지", "악세사리", "케익"],
+    expectedOriginals: ["콘텐츠", "메시지", "액세서리", "케이크"],
+    expectedTypes: ["외래어", "외래어", "외래어", "외래어"],
+  },
+  {
     name: "fallback applies once when primary rules do not match",
     input: "오늘 기분 좋다.",
     expectedWrongText: "오늘 기분 졋다.",

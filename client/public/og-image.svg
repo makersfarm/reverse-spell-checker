@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">맏춤법 검사기</title>
+  <desc id="desc">리버스 맞춤법 검사기 공유 이미지</desc>
+  <rect width="1200" height="630" fill="#FFFBF0"/>
+  <path d="M0 0H1200V630H0z" fill="#FFFBF0"/>
+  <path d="M0 0H1200V630H0z" fill="url(#grid)" opacity=".75"/>
+  <rect x="82" y="78" width="1036" height="474" rx="34" fill="#fff" stroke="#1A1A1A" stroke-width="7"/>
+  <rect x="91" y="87" width="1018" height="456" rx="28" fill="none" stroke="#FFE234" stroke-width="8" opacity=".9"/>
+  <text x="126" y="218" fill="#1A1A1A" font-family="Arial, sans-serif" font-size="86" font-weight="900">맏춤법 검사기</text>
+  <text x="130" y="302" fill="#554C43" font-family="Arial, sans-serif" font-size="34" font-weight="700">자주 헷갈리는 표현을 문장 안에서 바로 확인</text>
+  <g transform="translate(132 370)">
+    <rect x="0" y="0" width="936" height="92" rx="20" fill="#FFF3B0" stroke="#1A1A1A" stroke-width="4"/>
+    <text x="36" y="59" fill="#1A1A1A" font-family="Arial, sans-serif" font-size="36" font-weight="900">돼요</text>
+    <text x="228" y="59" fill="#6F6860" font-family="Arial, sans-serif" font-size="36" font-weight="700">→</text>
+    <text x="300" y="59" fill="#E02F2F" font-family="Arial, sans-serif" font-size="36" font-weight="900">되요</text>
+    <text x="520" y="59" fill="#1A1A1A" font-family="Arial, sans-serif" font-size="36" font-weight="900">며칠</text>
+    <text x="710" y="59" fill="#6F6860" font-family="Arial, sans-serif" font-size="36" font-weight="700">→</text>
+    <text x="782" y="59" fill="#E02F2F" font-family="Arial, sans-serif" font-size="36" font-weight="900">몇일</text>
+  </g>
+  <defs>
+    <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M48 0H0V48" fill="none" stroke="#E9DFC9" stroke-width="2"/>
+    </pattern>
+  </defs>
+</svg>

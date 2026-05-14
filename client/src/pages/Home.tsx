@@ -3,9 +3,10 @@
  * - 카드 이미지 다운로드 (인스타그램 스토리용)
  */
 
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import html2canvas from "html2canvas";
 import { reverseSpellCheck, buildHighlightedHtml, type ReverseResult } from "@/lib/reverseSpellCheck";
+import { getCharCountBucket, getResultAnalytics, initAnalytics, trackEvent } from "@/lib/analytics";
 import { ClipboardList, Copy, Check, FileText, Image as ImageIcon, PencilLine, RotateCcw, Search, Share2 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -20,6 +21,7 @@ const TYPE_STYLE: Record<string, { bg: string; dot: string; badge: string; badge
   "맞춤법":   { bg: "#FFF3B0", dot: "#FFB800", badge: "#FFE234", badgeText: "#7a4800", highlight: "#FFE234" },
   "띄어쓰기": { bg: "#D4F8E0", dot: "#5EE87A", badge: "#5EE87A", badgeText: "#1a6e3a", highlight: "#5EE87A" },
   "표준어":   { bg: "#FFD6E8", dot: "#FF6B9D", badge: "#FF6B9D", badgeText: "#fff",    highlight: "#FF6B9D" },
+  "외래어":   { bg: "#DDEBFF", dot: "#4A8BFF", badge: "#4A8BFF", badgeText: "#fff",    highlight: "#A7C8FF" },
 };
 
 const LOADING_MSGS = [
@@ -29,16 +31,16 @@ const LOADING_MSGS = [
 ];
 
 const SAMPLE_TEXTS = [
-  "오늘 날씨가 너무 좋아서 밖에 나가고 싶어요.",
-  "저는 매일 아침 커피를 마시는 것을 좋아합니다.",
-  "이번 주말에 친구들과 함께 영화를 보러 갈 예정이에요.",
-  "열심히 공부하면 반드시 좋은 결과가 있을 거예요.",
-  "오늘 점심으로 된장찌개와 밥을 먹었습니다.",
-  "왠지 오늘은 기분이 좋을 것 같아요.",
-  "며칠 동안 비가 내려서 금세 날씨가 쌀쌀해졌어요.",
-  "역할을 잘 수행하면 어이없는 실수를 줄일 수 있어요.",
-  "설렘을 느끼며 새로운 일을 시작하는 것이 중요해요.",
-  "오랜만에 만난 친구와 이야기를 나눴어요.",
+  "오랜만에 친구를 만나서 정말 좋았다. 며칠 전부터 기대하고 있었다.",
+  "오늘은 집에 가도 돼요. 내일 다시 봐도 돼서 좋아요.",
+  "웬만하면 오늘 끝내고, 왠지 내일은 쉬고 싶어요.",
+  "비가 그치더니 금세 맑아졌다. 그 상황은 정말 어이없다.",
+  "설렘을 안고 설거지를 마치고 좋은 결과를 바라요.",
+  "오늘 점심으로 된장찌개와 떡볶이를 먹었다.",
+  "액세서리와 케이크 사진을 메시지로 보냈다.",
+  "새 콘텐츠를 커피숍에서 같이 볼 수 있어요.",
+  "보고 싶다. 할 수 있다면 내일 다시 보자.",
+  "역할을 맡은 사람이 희한하다 싶은 실수를 했다.",
 ];
 
 export default function Home() {
@@ -47,12 +49,18 @@ export default function Home() {
   const [isChecking, setIsChecking] = useState(false);
   const [copied, setCopied] = useState(false);
   const [btnWiggle, setBtnWiggle] = useState(false);
-  const [sampleIdx, setSampleIdx] = useState(0);
   const [loadingMsg] = useState(() => LOADING_MSGS[Math.floor(Math.random() * LOADING_MSGS.length)]);
   const [isDownloading, setIsDownloading] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
   const resultPanelRef = useRef<HTMLDivElement>(null);
+  const lastSampleRef = useRef("");
+  const usedSampleRef = useRef(false);
+  const inputStartedRef = useRef(false);
   const siteUrl = getSiteUrl();
+
+  useEffect(() => {
+    initAnalytics();
+  }, []);
 
   const handleCheck = useCallback(() => {
     if (!inputText.trim()) {
@@ -60,11 +68,19 @@ export default function Home() {
       setTimeout(() => setBtnWiggle(false), 600);
       return;
     }
+    trackEvent("check_submit", {
+      char_count_bucket: getCharCountBucket(inputText),
+      used_sample: usedSampleRef.current,
+    });
     setIsChecking(true);
     setResult(null);
 
     setTimeout(() => {
       const res = reverseSpellCheck(inputText);
+      trackEvent("result_generated", {
+        ...getResultAnalytics(res),
+        used_sample: usedSampleRef.current,
+      });
       setResult(res);
       setIsChecking(false);
       requestAnimationFrame(() => {
@@ -81,6 +97,7 @@ export default function Home() {
   const handleCopy = useCallback(() => {
     if (!result) return;
     navigator.clipboard.writeText(result.wrongText).then(() => {
+      trackEvent("copy_result", getResultAnalytics(result));
       setCopied(true);
       toast.success("복사 완료");
       setTimeout(() => setCopied(false), 2000);
@@ -88,16 +105,40 @@ export default function Home() {
   }, [result]);
 
   const handleReset = useCallback(() => {
+    if (inputText || result) {
+      trackEvent("reset_input", {
+        had_result: Boolean(result),
+        char_count_bucket: getCharCountBucket(inputText || result?.originalText || ""),
+      });
+    }
     setInputText("");
     setResult(null);
-  }, []);
+    usedSampleRef.current = false;
+    inputStartedRef.current = false;
+  }, [inputText, result]);
 
   const handleSample = useCallback(() => {
-    const text = SAMPLE_TEXTS[sampleIdx % SAMPLE_TEXTS.length];
+    let text = SAMPLE_TEXTS[Math.floor(Math.random() * SAMPLE_TEXTS.length)];
+
+    if (SAMPLE_TEXTS.length > 1) {
+      while (text === lastSampleRef.current) {
+        text = SAMPLE_TEXTS[Math.floor(Math.random() * SAMPLE_TEXTS.length)];
+      }
+    }
+
+    lastSampleRef.current = text;
+    usedSampleRef.current = true;
+    inputStartedRef.current = true;
+    trackEvent("sample_used", {
+      char_count_bucket: getCharCountBucket(text),
+    });
+    trackEvent("input_start", {
+      source: "sample",
+      char_count_bucket: getCharCountBucket(text),
+    });
     setInputText(text);
     setResult(null);
-    setSampleIdx((prev) => (prev + 1) % SAMPLE_TEXTS.length);
-  }, [sampleIdx]);
+  }, []);
 
   const handleShare = useCallback(async () => {
     if (!result) return;
@@ -111,6 +152,10 @@ export default function Home() {
           text: shareText,
           url: siteUrl,
         });
+        trackEvent("share_result", {
+          ...getResultAnalytics(result),
+          share_method: "native",
+        });
         return;
       } catch (error) {
         if (error instanceof DOMException && error.name === "AbortError") return;
@@ -118,6 +163,10 @@ export default function Home() {
     }
 
     await navigator.clipboard.writeText(fallbackText);
+    trackEvent("share_result", {
+      ...getResultAnalytics(result),
+      share_method: "clipboard",
+    });
     setCopied(true);
     toast.success("공유할 내용을 복사했어요");
     setTimeout(() => setCopied(false), 2000);
@@ -138,6 +187,7 @@ export default function Home() {
       link.download = "맏춤법검사기_결과.png";
       link.href = canvas.toDataURL("image/png");
       link.click();
+      trackEvent("save_image", getResultAnalytics(result));
       toast.success("이미지 저장 완료");
     } catch {
       toast.error("이미지 저장에 실패했어요.");
@@ -228,7 +278,20 @@ export default function Home() {
               name="sourceText"
               autoComplete="off"
               value={inputText}
-              onChange={(e) => { if (e.target.value.length <= MAX_CHARS) setInputText(e.target.value); }}
+              onChange={(e) => {
+                if (e.target.value.length > MAX_CHARS) return;
+
+                if (!inputStartedRef.current && e.target.value.trim()) {
+                  inputStartedRef.current = true;
+                  usedSampleRef.current = false;
+                  trackEvent("input_start", {
+                    source: "manual",
+                    char_count_bucket: getCharCountBucket(e.target.value),
+                  });
+                }
+
+                setInputText(e.target.value);
+              }}
               placeholder={"문장을 입력해보세요.\nCtrl+Enter로 검사"}
               style={{
                 flex: 1, width: "100%", resize: "none", border: "none",
