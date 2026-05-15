@@ -219,7 +219,7 @@ export default function Home() {
     const wrongLength = reportWrong.trim().length;
 
     if (!correctLength || !wrongLength) {
-      toast.error("두 표현을 같이 적어주세요.");
+      toast.error("둘 다 적어주세요.");
       return;
     }
 
@@ -238,7 +238,7 @@ export default function Home() {
     setReportWrong("");
     setReportCategory("맞춤법");
     setIsReportOpen(false);
-    toast.success("제보가 기록됐어요");
+    toast.success("기록해둘게요.");
   }, [reportCategory, reportCorrect, reportWrong, result]);
 
   const highlightedHtml = result ? buildHighlightedHtml(result) : "";
@@ -549,7 +549,7 @@ export default function Home() {
                     className="report-trigger"
                     aria-haspopup="dialog"
                   >
-                    표현 제보
+                    이것도 넣어줘
                   </button>
                 </div>
 
@@ -695,8 +695,8 @@ export default function Home() {
             >
               <div className="report-dialog__header">
                 <div>
-                  <p className="report-dialog__eyebrow">표현 제보</p>
-                  <h2 id="report-dialog-title" className="report-dialog__title">빠진 표현이 있나요?</h2>
+                  <p className="report-dialog__eyebrow">빠진 표현</p>
+                  <h2 id="report-dialog-title" className="report-dialog__title">이것도 넣어둘까요?</h2>
                 </div>
                 <button type="button" className="report-dialog__close" onClick={handleCloseReport} aria-label="닫기">
                   <X size={18} strokeWidth={2.4} aria-hidden="true" />
@@ -704,12 +704,12 @@ export default function Home() {
               </div>
 
               <p className="report-dialog__note">
-                표현 내용은 저장하지 않고, 분류와 길이만 봅니다.
+                지금은 내용 대신 분류와 길이만 기록해요.
               </p>
 
               <div className="report-dialog__fields">
                 <label className="report-field">
-                  <span>맞는 표현</span>
+                  <span>원래 맞는 표현</span>
                   <input
                     value={reportCorrect}
                     onChange={(event) => setReportCorrect(event.target.value)}
@@ -754,7 +754,7 @@ export default function Home() {
                 <button type="button" className="report-dialog__secondary" onClick={handleCloseReport}>닫기</button>
                 <button type="submit" className="report-dialog__primary">
                   <Send size={16} strokeWidth={2.4} aria-hidden="true" />
-                  제보하기
+                  기록해두기
                 </button>
               </div>
             </form>
