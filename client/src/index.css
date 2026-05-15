@@ -164,7 +164,7 @@
     font-size: clamp(0.78rem, 1.05vw, 0.9rem);
     font-weight: 900;
     line-height: 1;
-    transform: rotate(-3deg) translateY(-100%);
+    transform: rotate(-3deg) translateY(calc(-100% - 12px));
     transform-origin: left center;
   }
 
