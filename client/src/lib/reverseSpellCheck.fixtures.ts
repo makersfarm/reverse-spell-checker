@@ -13,10 +13,17 @@ export interface ReverseRuleFixture {
 export const reverseRuleFixtures: ReverseRuleFixture[] = [
   {
     name: "common spelling pair",
-    input: "오랜만에 친구를 만나서 정말 좋았다. 며칠 전부터 기대하고 있었다.",
-    expectedWrongWords: ["오랫만에", "몇일"],
-    expectedOriginals: ["오랜만에", "며칠"],
-    expectedTypes: ["맞춤법", "맞춤법"],
+    input: "오랜만에 친구를 만나서 정말 좋았다. 며칠 전부터 왜 기다리고 있었다.",
+    expectedWrongWords: ["오랫만에", "몇일", "외"],
+    expectedOriginals: ["오랜만에", "며칠", "왜"],
+    expectedTypes: ["맞춤법", "맞춤법", "맞춤법"],
+  },
+  {
+    name: "why and loanword message sample",
+    input: "왜 이렇게 안 되는지 메시지로 보내도 돼요.",
+    expectedWrongWords: ["외", "않되는", "메세지", "되요"],
+    expectedOriginals: ["왜", "안 되는", "메시지", "돼요"],
+    expectedTypes: ["맞춤법", "맞춤법", "외래어", "맞춤법"],
   },
   {
     name: "되 and 돼 confusion",
