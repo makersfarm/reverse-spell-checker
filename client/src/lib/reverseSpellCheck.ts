@@ -72,6 +72,15 @@ function ruleFromCandidate(candidate: ReverseRuleCandidate): ReverseRule {
   });
 }
 
+function makeRulesFromPairs(
+  pairs: Array<[correct: string, wrong: string]>,
+  type: ErrorType,
+  reason: string,
+  options: { requiresContext?: boolean } = {},
+) {
+  return pairs.map(([correct, wrong]) => rule(correct, wrong, type, reason, options));
+}
+
 function mergeRules(primaryRules: ReverseRule[], candidateRules: ReverseRule[]) {
   const seen = new Set(primaryRules.map((currentRule) => `${currentRule.pattern.source}->${currentRule.wrong}`));
 
@@ -86,6 +95,53 @@ function mergeRules(primaryRules: ReverseRule[], candidateRules: ReverseRule[]) 
   ];
 }
 
+const DWAE_CONTRACTION_RULES = makeRulesFromPairs(
+  [
+    ["돼요", "되요"],
+    ["돼서", "되서"],
+    ["돼야", "되야"],
+    ["돼도", "되도"],
+    ["돼라", "되라"],
+    ["돼야지", "되야지"],
+    ["돼", "되"],
+  ],
+  "맞춤법",
+  "'돼'는 '되어'가 줄어든 말이에요.",
+);
+
+const DOEDA_STEM_RULES = makeRulesFromPairs(
+  [
+    ["되어", "돼어"],
+    ["되었", "돼었"],
+    ["되나요", "돼나요"],
+    ["되나", "돼나"],
+    ["되는", "돼는"],
+    ["된다고", "됀다고"],
+    ["된다면", "됀다면"],
+    ["된다", "됀다"],
+    ["된", "됀"],
+    ["될", "됄"],
+    ["됩니다", "됍니다"],
+    ["되고", "돼고"],
+    ["되지", "돼지"],
+    ["되면", "돼면"],
+    ["되니", "돼니"],
+    ["되는데", "돼는데"],
+    ["되므로", "돼므로"],
+    ["되면서", "돼면서"],
+    ["되니까", "돼니까"],
+    ["되던", "돼던"],
+    ["되더라", "돼더라"],
+    ["되길", "돼길"],
+    ["되기", "돼기"],
+    ["되려고", "돼려고"],
+    ["되려면", "돼려면"],
+    ["됨", "됌"],
+  ],
+  "맞춤법",
+  "'되-' 뒤에 '-어'가 붙어 줄어들 때만 '돼'로 써요.",
+);
+
 const BASE_REVERSE_RULES: ReverseRule[] = [
   rule("오랜만에", "오랫만에", "맞춤법", "'오랜만에'가 맞아요. '오랫만에'로 자주 헷갈려요."),
   rule("어이없다", "어의없다", "맞춤법", "'어이없다'가 맞아요. '어의없다'는 없는 말이에요."),
@@ -96,12 +152,10 @@ const BASE_REVERSE_RULES: ReverseRule[] = [
   rule("웬", "왠", "맞춤법", "'웬'은 '어떤'의 뜻. '왠'은 '왜인지'의 줄임이에요."),
   rule("왠지", "웬지", "맞춤법", "'왠지'는 '왜인지'의 줄임. '웬지'로 쓰면 틀려요."),
   rule("금세", "금새", "맞춤법", "'금세'는 '금시에'의 줄임. '금새'는 물건 값을 뜻해요."),
-  rule("돼요", "되요", "맞춤법", "'돼요'는 '되어요'의 줄임말이에요. '되요'로 쓰면 틀려요!"),
   rule("됐다", "됬다", "맞춤법", "'됐다'는 '되었다'의 줄임. '됬다'로 쓰면 틀려요."),
   rule("됐", "됬", "맞춤법", "'됐'은 '되었'의 줄임말. '됬'은 없는 말이에요."),
-  rule("돼서", "되서", "맞춤법", "'돼서'가 맞아요. '되서'로 자주 헷갈려요."),
-  rule("돼야", "되야", "맞춤법", "'돼야'가 맞아요. '되야'로 자주 헷갈려요."),
-  rule("안 돼", "안 되", "맞춤법", "부정 표현엔 '안 돼'가 맞아요."),
+  ...DWAE_CONTRACTION_RULES,
+  ...DOEDA_STEM_RULES,
   rule("역할", "역활", "맞춤법", "'역할'이 맞아요. '역활'은 없는 말이에요."),
   rule("희한하다", "희안하다", "맞춤법", "'희한하다'가 맞아요. '희안하다'는 없는 말이에요."),
   rule("희한하", "희안하", "표준어", "'희한하다'가 맞아요. '희안하다'는 없는 말이에요."),

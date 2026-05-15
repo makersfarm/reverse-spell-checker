@@ -10,7 +10,9 @@ type AnalyticsEventName =
   | "copy_result"
   | "share_result"
   | "save_image"
-  | "reset_input";
+  | "reset_input"
+  | "rule_report_opened"
+  | "rule_report_submitted";
 
 type EventParams = Record<string, string | number | boolean | undefined>;
 

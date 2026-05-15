@@ -26,6 +26,20 @@ export const reverseRuleFixtures: ReverseRuleFixture[] = [
     expectedTypes: ["맞춤법", "맞춤법"],
   },
   {
+    name: "되다 stem and 돼 contraction family",
+    input: "되어 가는 일이 됩니다. 잘 되는지 보면 안 돼요. 결국 됨.",
+    expectedWrongWords: ["돼어", "됍니다", "돼는", "되요", "됌"],
+    expectedOriginals: ["되어", "됩니다", "되는", "돼요", "됨"],
+    expectedTypes: ["맞춤법", "맞춤법", "맞춤법", "맞춤법", "맞춤법"],
+  },
+  {
+    name: "common conjugation confusions",
+    input: "이렇게 해요. 안 되는 일도 결국 기록됨. 감기가 많이 나아졌고 아이를 낳았다.",
+    expectedWrongWords: ["하요", "않되는", "됌", "낳아졌", "아이를 낫았다"],
+    expectedOriginals: ["해요", "안 되는", "됨", "나아졌", "아이를 낳았다"],
+    expectedTypes: ["맞춤법", "맞춤법", "맞춤법", "맞춤법", "맞춤법"],
+  },
+  {
     name: "spacing rules",
     input: "할 수 있는 만큼 보고 싶다.",
     expectedWrongWords: ["할수", "만 큼", "보고싶다"],
@@ -45,6 +59,13 @@ export const reverseRuleFixtures: ReverseRuleFixture[] = [
     expectedWrongWords: ["컨텐츠", "메세지", "악세사리", "케익"],
     expectedOriginals: ["콘텐츠", "메시지", "액세서리", "케이크"],
     expectedTypes: ["외래어", "외래어", "외래어", "외래어"],
+  },
+  {
+    name: "popular blog and social spelling cases",
+    input: "이 일은 맡겨 주세요. 으레 무난했고 김치를 담갔다. 내로라하는 사람이 필요한 조치를 했다.",
+    expectedWrongWords: ["맞겨", "의레", "문안", "담궜다", "내노라하는", "조취"],
+    expectedOriginals: ["맡겨", "으레", "무난", "담갔다", "내로라하는", "조치"],
+    expectedTypes: ["맞춤법", "맞춤법", "맞춤법", "맞춤법", "맞춤법", "맞춤법"],
   },
   {
     name: "fallback applies once when primary rules do not match",

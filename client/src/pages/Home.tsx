@@ -3,11 +3,11 @@
  * - 카드 이미지 다운로드 (인스타그램 스토리용)
  */
 
-import { useState, useRef, useCallback, useEffect } from "react";
+import { useState, useRef, useCallback, useEffect, type FormEvent } from "react";
 import html2canvas from "html2canvas";
 import { reverseSpellCheck, buildHighlightedHtml, type ReverseResult } from "@/lib/reverseSpellCheck";
 import { getCharCountBucket, getResultAnalytics, initAnalytics, trackEvent } from "@/lib/analytics";
-import { ClipboardList, Copy, Check, FileText, Image as ImageIcon, PencilLine, RotateCcw, Search, Share2 } from "lucide-react";
+import { ClipboardList, Copy, Check, FileText, Image as ImageIcon, PencilLine, RotateCcw, Search, Send, Share2, X } from "lucide-react";
 import { toast } from "sonner";
 
 const MAX_CHARS = 500;
@@ -33,6 +33,9 @@ const LOADING_MSGS = [
 const SAMPLE_TEXTS = [
   "오랜만에 친구를 만나서 정말 좋았다. 며칠 전부터 기대하고 있었다.",
   "오늘은 집에 가도 돼요. 내일 다시 봐도 돼서 좋아요.",
+  "이렇게 해요. 안 되는 일도 결국 기록됨. 나중에 다시 볼 수 있어요.",
+  "감기가 빨리 나아야 하는데, 어제보다 많이 나아졌어요.",
+  "아기를 낳았다. 다음 주에는 산후조리원에 갈 예정이에요.",
   "웬만하면 오늘 끝내고, 왠지 내일은 쉬고 싶어요.",
   "비가 그치더니 금세 맑아졌다. 그 상황은 정말 어이없다.",
   "설렘을 안고 설거지를 마치고 좋은 결과를 바라요.",
@@ -43,6 +46,9 @@ const SAMPLE_TEXTS = [
   "역할을 맡은 사람이 희한하다 싶은 실수를 했다.",
 ];
 
+const REPORT_CATEGORIES = ["맞춤법", "띄어쓰기", "표준어", "외래어", "모르겠음"] as const;
+type ReportCategory = (typeof REPORT_CATEGORIES)[number];
+
 export default function Home() {
   const [inputText, setInputText] = useState("");
   const [result, setResult] = useState<ReverseResult | null>(null);
@@ -51,6 +57,10 @@ export default function Home() {
   const [btnWiggle, setBtnWiggle] = useState(false);
   const [loadingMsg] = useState(() => LOADING_MSGS[Math.floor(Math.random() * LOADING_MSGS.length)]);
   const [isDownloading, setIsDownloading] = useState(false);
+  const [isReportOpen, setIsReportOpen] = useState(false);
+  const [reportCorrect, setReportCorrect] = useState("");
+  const [reportWrong, setReportWrong] = useState("");
+  const [reportCategory, setReportCategory] = useState<ReportCategory>("맞춤법");
   const cardRef = useRef<HTMLDivElement>(null);
   const resultPanelRef = useRef<HTMLDivElement>(null);
   const lastSampleRef = useRef("");
@@ -113,6 +123,7 @@ export default function Home() {
     }
     setInputText("");
     setResult(null);
+    setIsReportOpen(false);
     usedSampleRef.current = false;
     inputStartedRef.current = false;
   }, [inputText, result]);
@@ -195,6 +206,48 @@ export default function Home() {
       setIsDownloading(false);
     }
   }, [result]);
+
+  const handleOpenReport = useCallback(() => {
+    setIsReportOpen(true);
+    trackEvent("rule_report_opened", {
+      has_result: Boolean(result),
+      error_count: result?.errors.length ?? 0,
+      categories: result ? getResultAnalytics(result).categories : "none",
+    });
+  }, [result]);
+
+  const handleCloseReport = useCallback(() => {
+    setIsReportOpen(false);
+  }, []);
+
+  const handleSubmitReport = useCallback((event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const correctLength = reportCorrect.trim().length;
+    const wrongLength = reportWrong.trim().length;
+
+    if (!correctLength || !wrongLength) {
+      toast.error("두 표현을 같이 적어주세요.");
+      return;
+    }
+
+    trackEvent("rule_report_submitted", {
+      category: reportCategory,
+      correct_length: correctLength,
+      wrong_length: wrongLength,
+      correct_length_bucket: getCharCountBucket(reportCorrect),
+      wrong_length_bucket: getCharCountBucket(reportWrong),
+      has_result: Boolean(result),
+      error_count: result?.errors.length ?? 0,
+      categories: result ? getResultAnalytics(result).categories : "none",
+    });
+
+    setReportCorrect("");
+    setReportWrong("");
+    setReportCategory("맞춤법");
+    setIsReportOpen(false);
+    toast.success("제보가 기록됐어요");
+  }, [reportCategory, reportCorrect, reportWrong, result]);
 
   const highlightedHtml = result ? buildHighlightedHtml(result) : "";
 
@@ -498,6 +551,14 @@ export default function Home() {
                       </span>
                     );
                   })}
+                  <button
+                    type="button"
+                    onClick={handleOpenReport}
+                    className="report-trigger"
+                    aria-haspopup="dialog"
+                  >
+                    표현 제보
+                  </button>
                 </div>
 
 	                <div className="result-action-strip">
@@ -622,6 +683,89 @@ export default function Home() {
                 {siteUrl.replace(/^https?:\/\//, "")}
               </span>
             </div>
+          </div>
+        )}
+
+        {isReportOpen && (
+          <div
+            className="report-dialog-backdrop animate-fade-in"
+            role="presentation"
+            onMouseDown={(event) => {
+              if (event.target === event.currentTarget) handleCloseReport();
+            }}
+          >
+            <form
+              className="report-dialog"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="report-dialog-title"
+              onSubmit={handleSubmitReport}
+            >
+              <div className="report-dialog__header">
+                <div>
+                  <p className="report-dialog__eyebrow">표현 제보</p>
+                  <h2 id="report-dialog-title" className="report-dialog__title">빠진 표현이 있나요?</h2>
+                </div>
+                <button type="button" className="report-dialog__close" onClick={handleCloseReport} aria-label="닫기">
+                  <X size={18} strokeWidth={2.4} aria-hidden="true" />
+                </button>
+              </div>
+
+              <p className="report-dialog__note">
+                표현 내용은 저장하지 않고, 분류와 길이만 봅니다.
+              </p>
+
+              <div className="report-dialog__fields">
+                <label className="report-field">
+                  <span>맞는 표현</span>
+                  <input
+                    value={reportCorrect}
+                    onChange={(event) => setReportCorrect(event.target.value)}
+                    name="reportCorrect"
+                    autoComplete="off"
+                    maxLength={60}
+                    placeholder="예: 돼요"
+                  />
+                </label>
+                <label className="report-field">
+                  <span>자주 보이는 표현</span>
+                  <input
+                    value={reportWrong}
+                    onChange={(event) => setReportWrong(event.target.value)}
+                    name="reportWrong"
+                    autoComplete="off"
+                    maxLength={60}
+                    placeholder="예: 되요"
+                  />
+                </label>
+              </div>
+
+              <fieldset className="report-category">
+                <legend>분류</legend>
+                <div className="report-category__options">
+                  {REPORT_CATEGORIES.map((category) => (
+                    <label key={category} className="report-category__option">
+                      <input
+                        type="radio"
+                        name="reportCategory"
+                        value={category}
+                        checked={reportCategory === category}
+                        onChange={() => setReportCategory(category)}
+                      />
+                      <span>{category}</span>
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
+
+              <div className="report-dialog__actions">
+                <button type="button" className="report-dialog__secondary" onClick={handleCloseReport}>닫기</button>
+                <button type="submit" className="report-dialog__primary">
+                  <Send size={16} strokeWidth={2.4} aria-hidden="true" />
+                  제보하기
+                </button>
+              </div>
+            </form>
           </div>
         )}
       </main>
