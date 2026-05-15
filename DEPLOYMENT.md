@@ -6,7 +6,7 @@
 
 - GitHub `main` 브랜치에 push되면 Vercel Production 배포가 생성된다.
 - PR 또는 `main`이 아닌 브랜치 push는 Vercel Preview 배포로 확인한다.
-- GitHub Actions는 배포를 직접 하지 않고 `pnpm check`, `pnpm test`, `pnpm build`만 확인한다.
+- GitHub Actions는 배포를 직접 하지 않고 `pnpm qa`로 타입 체크, 테스트, 빌드만 확인한다.
 
 Vercel 공식 문서 기준으로 Git 저장소를 연결하면 브랜치 push마다 자동 배포가 생성되고, production branch의 최신 변경은 Production 배포가 된다.
 
@@ -38,10 +38,10 @@ VITE_SITE_URL=https://example.com
 배포 전 로컬에서 다음 명령을 통과시킨다.
 
 ```bash
-pnpm check
-pnpm test
-pnpm build
+pnpm qa
 ```
+
+배포 뒤에는 `HARNESS.md`의 배포 하네스 기준으로 홈, `robots.txt`, `sitemap.xml`을 확인한다.
 
 ## 주의
 

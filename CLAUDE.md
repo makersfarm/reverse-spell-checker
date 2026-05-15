@@ -41,6 +41,7 @@ pnpm qa
 - `client/src/lib/analytics.ts`: GA4 이벤트
 - `docs/spelling-rules.md`: 현재 적용된 맞춤법 규칙
 - `RULE_UPDATE.md`: 룰 추가 기준
+- `HARNESS.md`: 로컬, CI, UI, 배포, 분석, 검색 노출 검증 기준
 - `DEPLOYMENT.md`: 배포 운영
 
 ## Product Rules
@@ -109,3 +110,4 @@ Then:
 3. Push `main`.
 4. Create a GitHub release tag.
 5. Confirm Vercel production URL responds.
+6. Check `HARNESS.md` for any extra UI, GA4, SEO, or deployment verification relevant to the change.

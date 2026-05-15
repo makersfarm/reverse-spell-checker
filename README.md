@@ -75,6 +75,7 @@ Vercel 설정:
 
 - [맞춤법 룰 업데이트 기준](./RULE_UPDATE.md)
 - [현재 적용 규칙](./docs/spelling-rules.md)
+- [검증 하네스](./HARNESS.md)
 - [룰 후보 정리](./RULE_CANDIDATES.md)
 - [기능 명세](./SPEC.md)
 - [배포 운영](./DEPLOYMENT.md)
