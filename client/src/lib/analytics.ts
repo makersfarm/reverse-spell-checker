@@ -67,10 +67,18 @@ export function getCharCountBucket(text: string) {
 
 export function getResultAnalytics(result: ReverseResult) {
   const categories = Array.from(new Set(result.errors.map((error) => error.type))).join(",");
+  const ruleIds = Array.from(new Set(result.errors.map((error) => error.ruleId)));
 
   return {
     error_count: result.errors.length,
+    rule_count: ruleIds.length,
     categories: categories || "none",
+    matched_rules: ruleIds.slice(0, 10).join(",") || "none",
+    matched_rule_1: ruleIds[0],
+    matched_rule_2: ruleIds[1],
+    matched_rule_3: ruleIds[2],
+    matched_rule_4: ruleIds[3],
+    matched_rule_5: ruleIds[4],
     char_count_bucket: getCharCountBucket(result.originalText),
   };
 }

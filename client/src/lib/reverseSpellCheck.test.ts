@@ -53,4 +53,12 @@ describe("reverseSpellCheck", () => {
       expect(result.wrongText.slice(error.startIndex, error.endIndex)).toBe(error.wrong);
     }
   });
+
+  it("attaches stable rule ids for analytics", () => {
+    const result = reverseSpellCheck("오늘은 집에 가도 돼요. 며칠 기다렸다.");
+
+    expect(result.errors.map((error) => error.ruleId)).toEqual(
+      expect.arrayContaining(["dwae_contraction_돼요_to_되요", "spelling-myeochil"]),
+    );
+  });
 });

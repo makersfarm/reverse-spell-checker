@@ -9,6 +9,7 @@ type ErrorType = "맞춤법" | "띄어쓰기" | "표준어" | "외래어";
 
 export interface ErrorItem {
   id: string;
+  ruleId: string;
   original: string;
   wrong: string;
   type: ErrorType;
@@ -28,6 +29,7 @@ interface ReverseOptions {
 }
 
 interface ReverseRule {
+  ruleId: string;
   pattern: RegExp;
   wrong: string;
   type: ErrorType;
@@ -49,7 +51,7 @@ function rule(
   wrong: string,
   type: ErrorType,
   reason: string,
-  options: { requiresContext?: boolean } = {},
+  options: { requiresContext?: boolean; ruleId?: string } = {},
 ): ReverseRule {
   const pattern =
     typeof correct === "string"
@@ -57,6 +59,7 @@ function rule(
       : new RegExp(correct.source, correct.flags.includes("g") ? correct.flags : `${correct.flags}g`);
 
   return {
+    ruleId: options.ruleId || createRuleId(correct, wrong),
     pattern,
     wrong,
     type,
@@ -69,6 +72,7 @@ function rule(
 function ruleFromCandidate(candidate: ReverseRuleCandidate): ReverseRule {
   return rule(candidate.correct, candidate.wrong, candidate.type, candidate.reason, {
     requiresContext: candidate.contextRequired,
+    ruleId: candidate.id,
   });
 }
 
@@ -76,9 +80,12 @@ function makeRulesFromPairs(
   pairs: Array<[correct: string, wrong: string]>,
   type: ErrorType,
   reason: string,
-  options: { requiresContext?: boolean } = {},
+  options: { requiresContext?: boolean; ruleGroup?: string } = {},
 ) {
-  return pairs.map(([correct, wrong]) => rule(correct, wrong, type, reason, options));
+  return pairs.map(([correct, wrong]) => rule(correct, wrong, type, reason, {
+    requiresContext: options.requiresContext,
+    ruleId: options.ruleGroup ? `${options.ruleGroup}_${slugifyRulePart(correct)}_to_${slugifyRulePart(wrong)}` : undefined,
+  }));
 }
 
 function mergeRules(primaryRules: ReverseRule[], candidateRules: ReverseRule[]) {
@@ -107,6 +114,7 @@ const DWAE_CONTRACTION_RULES = makeRulesFromPairs(
   ],
   "맞춤법",
   "'돼'는 '되어'가 줄어든 말이에요.",
+  { ruleGroup: "dwae_contraction" },
 );
 
 const DOEDA_STEM_RULES = makeRulesFromPairs(
@@ -140,13 +148,14 @@ const DOEDA_STEM_RULES = makeRulesFromPairs(
   ],
   "맞춤법",
   "'되-' 뒤에 '-어'가 붙어 줄어들 때만 '돼'로 써요.",
+  { ruleGroup: "doeda_stem" },
 );
 
 const BASE_REVERSE_RULES: ReverseRule[] = [
   rule("오랜만에", "오랫만에", "맞춤법", "'오랜만에'가 맞아요. '오랫만에'로 자주 헷갈려요."),
   rule("어이없다", "어의없다", "맞춤법", "'어이없다'가 맞아요. '어의없다'는 없는 말이에요."),
   rule("어이없", "어의없", "표준어", "'어이없다'가 맞아요. '어의없다'는 없는 말이에요."),
-  rule("며칠", "몇일", "맞춤법", "'며칠'이 맞아요. '몇일'은 없는 말이에요."),
+  rule("며칠", "몇일", "맞춤법", "'며칠'이 맞아요. '몇일'은 없는 말이에요.", { ruleId: "spelling-myeochil" }),
   rule("웬만하면", "왠만하면", "맞춤법", "'웬만하면'이 맞아요. '왠'은 '왜인지'의 줄임이에요."),
   rule("웬일", "왠일", "맞춤법", "'웬일'이 맞아요. '왠일'로 자주 헷갈려요."),
   rule("웬", "왠", "맞춤법", "'웬'은 '어떤'의 뜻. '왠'은 '왜인지'의 줄임이에요."),
@@ -270,6 +279,7 @@ function applyRuleSet(
 
     errors.push({
       id: `err-${index + 1}`,
+      ruleId: candidate.ruleId,
       original: candidate.original,
       wrong: candidate.wrong,
       type: candidate.type,
@@ -385,4 +395,18 @@ function escapeHtml(str: string): string {
 
 function escapeRegExp(str: string): string {
   return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function createRuleId(correct: string | RegExp, wrong: string) {
+  const source = typeof correct === "string" ? correct : correct.source;
+  return `rule_${slugifyRulePart(source)}_to_${slugifyRulePart(wrong)}`;
+}
+
+function slugifyRulePart(value: string) {
+  return value
+    .normalize("NFKC")
+    .replace(/[^\p{Letter}\p{Number}]+/gu, "_")
+    .replace(/^_+|_+$/g, "")
+    .toLowerCase()
+    .slice(0, 48) || "pattern";
 }
