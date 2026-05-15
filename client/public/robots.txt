@@ -2,3 +2,4 @@ User-agent: *
 Allow: /
 
 Sitemap: https://reverse-spell-checker.vercel.app/sitemap.xml
+Sitemap: https://reverse-spell-checker.vercel.app/sitemap.txt
