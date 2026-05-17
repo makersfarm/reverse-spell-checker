@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 96 96" role="img" aria-labelledby="title desc">
+  <title id="title">리버스 맞춤법 검사기 아이콘</title>
+  <desc id="desc">검은 배경에 노란 R 글자가 있는 정사각형 아이콘</desc>
+  <rect width="96" height="96" rx="22" fill="#1A1A1A" />
+  <path d="M24 24h28c13 0 21 7 21 18 0 8-4 14-12 17l15 13H59L46 61H39v11H24V24Zm15 12v14h12c5 0 8-3 8-7s-3-7-8-7H39Z" fill="#FFE234" />
+</svg>
