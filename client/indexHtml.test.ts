@@ -20,9 +20,8 @@ describe("index.html SEO metadata", () => {
       name: "리버스 맞춤법 검사기",
       url: "https://reverse-spell-checker.vercel.app/",
     });
-    expect(website?.alternateName).toEqual(
-      expect.arrayContaining(["맏춤법 검사기", "reverse-spell-checker.vercel.app"]),
-    );
+    expect(website?.alternateName).toBe("맏춤법 검사기");
+    expect(JSON.stringify(website?.alternateName)).not.toContain("reverse-spell-checker.vercel.app");
   });
 
   it("uses a stable crawlable favicon URL", () => {
