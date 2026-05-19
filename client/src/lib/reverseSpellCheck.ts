@@ -232,8 +232,6 @@ const FALLBACK_RULES: ReverseRule[] = [
   rule(/같다/g, "갔다", "맞춤법", "일반적인 맞춤법 오류가 적용됐어요."),
   rule(/많다/g, "만타", "맞춤법", "일반적인 맞춤법 오류가 적용됐어요."),
   rule(/좋다/g, "졋다", "맞춤법", "일반적인 맞춤법 오류가 적용됐어요."),
-  rule(/다\./g, "다요.", "맞춤법", "일반적인 맞춤법 오류가 적용됐어요."),
-  rule(/다$/g, "다요", "맞춤법", "일반적인 맞춤법 오류가 적용됐어요."),
 ];
 
 export function reverseSpellCheck(text: string, options: ReverseOptions = {}): ReverseResult {

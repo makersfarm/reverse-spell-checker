@@ -27,8 +27,12 @@ describe("index.html SEO metadata", () => {
   it("uses a stable crawlable favicon URL", () => {
     const favicon = html.match(/<link rel="icon" href="([^"]+)"/)?.[1];
 
-    expect(favicon).toBe("/favicon.svg");
+    expect(favicon).toBe("/favicon-48.png");
     expect(favicon?.startsWith("data:")).toBe(false);
+    expect(html).toContain('<link rel="icon" href="/favicon.svg" type="image/svg+xml" />');
+    expect(html).toContain('<link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />');
+    expect(existsSync(new URL("./public/favicon-48.png", import.meta.url))).toBe(true);
     expect(existsSync(new URL("./public/favicon.svg", import.meta.url))).toBe(true);
+    expect(existsSync(new URL("./public/apple-touch-icon.png", import.meta.url))).toBe(true);
   });
 });

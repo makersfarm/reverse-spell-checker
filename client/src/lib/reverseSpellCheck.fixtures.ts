@@ -83,6 +83,13 @@ export const reverseRuleFixtures: ReverseRuleFixture[] = [
     expectedTypes: ["맞춤법"],
   },
   {
+    name: "does not invent 다요 from normal sentence ending",
+    input: "친구랑 맛집에 갔다.",
+    expectedWrongText: "친구랑 맛집에 갔다.",
+    expectedWrongWords: [],
+    expectedOriginals: [],
+  },
+  {
     name: "contextual rule can be enabled",
     input: "무엇을 고르든지 괜찮다.",
     includeContextual: true,
