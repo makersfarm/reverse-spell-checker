@@ -151,6 +151,19 @@ const DOEDA_STEM_RULES = makeRulesFromPairs(
   { ruleGroup: "doeda_stem" },
 );
 
+const BAKKWIDA_CONTRACTION_RULES = makeRulesFromPairs(
+  [
+    ["바뀌어요", "바껴요"],
+    ["바뀌어서", "바껴서"],
+    ["바뀌어도", "바껴도"],
+    ["바뀌었", "바꼈"],
+    ["바뀌어", "바껴"],
+  ],
+  "맞춤법",
+  "'바뀌어'는 '바껴'로 줄여 쓰지 않아요.",
+  { ruleGroup: "bakkwida_contraction" },
+);
+
 const BASE_REVERSE_RULES: ReverseRule[] = [
   rule("오랜만에", "오랫만에", "맞춤법", "'오랜만에'가 맞아요. '오랫만에'로 자주 헷갈려요."),
   rule("어이없다", "어의없다", "맞춤법", "'어이없다'가 맞아요. '어의없다'는 없는 말이에요."),
@@ -167,6 +180,7 @@ const BASE_REVERSE_RULES: ReverseRule[] = [
   rule("됐", "됬", "맞춤법", "'됐'은 '되었'의 줄임말. '됬'은 없는 말이에요."),
   ...DWAE_CONTRACTION_RULES,
   ...DOEDA_STEM_RULES,
+  ...BAKKWIDA_CONTRACTION_RULES,
   rule("역할", "역활", "맞춤법", "'역할'이 맞아요. '역활'은 없는 말이에요."),
   rule("희한하다", "희안하다", "맞춤법", "'희한하다'가 맞아요. '희안하다'는 없는 말이에요."),
   rule("희한하", "희안하", "표준어", "'희한하다'가 맞아요. '희안하다'는 없는 말이에요."),

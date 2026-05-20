@@ -75,6 +75,13 @@ export const reverseRuleFixtures: ReverseRuleFixture[] = [
     expectedTypes: ["맞춤법", "맞춤법", "맞춤법", "맞춤법", "맞춤법", "맞춤법"],
   },
   {
+    name: "bakkwieo contraction confusion",
+    input: "도대체 언제 바뀌어 이거. 화면이 바뀌어요.",
+    expectedWrongWords: ["도데체", "바껴", "바껴요"],
+    expectedOriginals: ["도대체", "바뀌어", "바뀌어요"],
+    expectedTypes: ["맞춤법", "맞춤법", "맞춤법"],
+  },
+  {
     name: "fallback applies once when primary rules do not match",
     input: "오늘 기분 좋다.",
     expectedWrongText: "오늘 기분 졋다.",

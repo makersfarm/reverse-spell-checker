@@ -38,6 +38,8 @@
 | 되던, 되더라, 되길, 되기 | 돼던, 돼더라, 돼길, 돼기 | `되-` 활용 |
 | 되려고, 되려면 | 돼려고, 돼려면 | `되-` 활용 |
 | 됨 | 됌 | `되-` + 명사형 어미 `-ㅁ` |
+| 바뀌어, 바뀌어요, 바뀌어서, 바뀌어도 | 바껴, 바껴요, 바껴서, 바껴도 | `바뀌어`는 `바껴`로 줄지 않음 |
+| 바뀌었- | 바꼈- | `바뀌다` 활용 |
 
 ## 현재 적용 규칙
 
@@ -55,6 +57,8 @@
 | 희한하다, 희한하- | 희안하다, 희안하- |
 | 굳이 | 구지 |
 | 도대체 | 도데체 |
+| 바뀌어, 바뀌어요, 바뀌어서, 바뀌어도 | 바껴, 바껴요, 바껴서, 바껴도 |
+| 바뀌었- | 바꼈- |
 | 요새 | 요세 |
 | 일부러 | 일부로 |
 | 찌개 | 찌게 |
@@ -140,6 +144,7 @@
 - 국립국어원 한국어 어문 규범: https://www.korean.go.kr/kornorms/regltn/regltnView.do
 - 국립국어원 온라인가나다, `되/돼`: https://www.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=261&pageIndex=1&qna_seq=279782
 - 국립국어원 온라인가나다, `됨/됌`: https://www.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=216&pageIndex=1&qna_seq=328243
+- 국립국어원 온라인가나다 FAQ, `바뀌어/바껴`: https://www.korean.go.kr/front/mcfaq/mcfaqView.do?mcfaq_seq=8596&mn_id=62
 - 국립국어원 온라인가나다, `낫다/낳다`: https://www.korean.go.kr/front/onlineQna/onlineQnaView.do?mn_id=216&pageIndex=1&qna_seq=305076
 - 국립국어원 소식지, `내로라하는`: https://www.korean.go.kr/nkview/news_pdf/2023_9%282%29.pdf
 - 동아일보, 구직자 자주 틀리는 맞춤법: https://www.donga.com/news/article/all/20160927/80493433/1
