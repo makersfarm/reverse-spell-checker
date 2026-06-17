@@ -60,9 +60,9 @@ UI를 바꾼 뒤에는 브라우저에서 주요 폭을 확인한다.
 
 `main`에 push하면 Vercel Production 배포가 생성된다. 배포 뒤 확인할 URL:
 
-- `https://reverse-spell-checker.vercel.app/`
-- `https://reverse-spell-checker.vercel.app/robots.txt`
-- `https://reverse-spell-checker.vercel.app/sitemap.xml`
+- `https://reverse-spell-checker.site/`
+- `https://reverse-spell-checker.site/robots.txt`
+- `https://reverse-spell-checker.site/sitemap.xml`
 
 기준:
 

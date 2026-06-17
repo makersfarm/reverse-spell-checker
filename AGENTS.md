@@ -28,7 +28,7 @@
 
 ## SEO와 검색 노출
 
-- 대표 URL은 `https://reverse-spell-checker.vercel.app/`다. 커스텀 도메인은 별도 요청 전까지 붙이지 않는다.
+- 대표 URL은 `https://reverse-spell-checker.site/`다.
 - `robots.txt`는 `sitemap.xml` 하나만 가리킨다. `sitemap.txt` 같은 대체 파일을 다시 추가하지 않는다.
 - Google 일반 웹페이지는 Indexing API 대상이 아니다. 검색 노출 관련 작업은 Search Console URL 검사, sitemap 제출, 외부 링크, 정적 HTML 본문 보강으로 처리한다.
 - SEO용 정적 본문은 `client/index.html`의 `#root` fallback 안에 둔다. React 렌더링 전에도 `맏춤법 검사기`, `리버스 맞춤법 검사기`, 주요 케이스가 읽혀야 한다.

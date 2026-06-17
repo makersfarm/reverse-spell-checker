@@ -2,7 +2,7 @@
 
 올바른 한국어 문장을 사람들이 자주 헷갈리는 표기로 바꿔 보여주는 리버스 맞춤법 검사기입니다.
 
-- 서비스: https://reverse-spell-checker.vercel.app/
+- 서비스: https://reverse-spell-checker.site/
 - GitHub: https://github.com/makersfarm/reverse-spell-checker
 
 ## 무엇을 하나요
@@ -83,6 +83,6 @@ Vercel 설정:
 ## 운영 메모
 
 - 사이트명은 `리버스 맞춤법 검사기`, 화면 타이틀은 `맏춤법 검사기`입니다.
-- 커스텀 도메인은 나중에 붙입니다. 현재 대표 URL은 Vercel 기본 도메인입니다.
+- 대표 URL은 `https://reverse-spell-checker.site/`입니다.
 - sitemap은 `sitemap.xml` 하나만 사용합니다.
 - 일반 웹페이지는 Google Indexing API 대상이 아닙니다. 검색 노출 개선은 Search Console URL 검사, sitemap 제출, 외부 링크, 정적 본문 보강으로 처리합니다.

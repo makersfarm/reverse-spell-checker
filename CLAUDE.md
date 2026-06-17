@@ -6,7 +6,7 @@
 
 - 제품: `맏춤법 검사기`
 - 성격: 올바른 한국어 문장을 자주 헷갈리는 표기로 바꿔 보여주는 리버스 맞춤법 검사기
-- 대표 URL: https://reverse-spell-checker.vercel.app/
+- 대표 URL: https://reverse-spell-checker.site/
 - 저장소: https://github.com/makersfarm/reverse-spell-checker
 - 배포: Vercel Git 연동, `main` push 시 Production 배포
 
@@ -78,7 +78,7 @@ pnpm qa
 
 ## SEO Notes
 
-- 커스텀 도메인은 아직 붙이지 않는다.
+- 대표 URL은 `https://reverse-spell-checker.site/`다.
 - `robots.txt`는 `sitemap.xml` 하나만 가리킨다.
 - 일반 웹페이지는 Google Indexing API 대상이 아니다.
 - 검색 노출 개선은 Search Console URL 검사, sitemap 제출, 외부 링크, 정적 HTML 본문 보강으로 처리한다.

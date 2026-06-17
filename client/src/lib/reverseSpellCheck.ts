@@ -88,6 +88,51 @@ function makeRulesFromPairs(
   }));
 }
 
+function makeStandaloneRulesFromPairs(
+  pairs: Array<[correct: string, wrong: string]>,
+  type: ErrorType,
+  reason: string,
+  options: { requiresContext?: boolean; ruleGroup?: string } = {},
+) {
+  return pairs.map(([correct, wrong]) => standaloneRule(correct, wrong, type, reason, {
+    requiresContext: options.requiresContext,
+    ruleId: options.ruleGroup ? `${options.ruleGroup}_${slugifyRulePart(correct)}_to_${slugifyRulePart(wrong)}` : undefined,
+  }));
+}
+
+function standaloneRule(
+  correct: string,
+  wrong: string,
+  type: ErrorType,
+  reason: string,
+  options: { requiresContext?: boolean; ruleId?: string } = {},
+): ReverseRule {
+  return rule(
+    new RegExp(`(?<![\\p{Letter}\\p{Number}])${escapeRegExp(correct)}(?![\\p{Letter}\\p{Number}])`, "gu"),
+    wrong,
+    type,
+    reason,
+    {
+      requiresContext: options.requiresContext,
+      ruleId: options.ruleId || createRuleId(correct, wrong),
+    },
+  );
+}
+
+function makeEndingPairs(
+  words: readonly string[],
+  correctEnding: "이" | "히",
+  wrongEnding: "이" | "히",
+): Array<[correct: string, wrong: string]> {
+  return words.map((word) => {
+    if (!word.endsWith(correctEnding)) {
+      throw new Error(`Article 51 adverb "${word}" must end with "${correctEnding}".`);
+    }
+
+    return [word, `${word.slice(0, -correctEnding.length)}${wrongEnding}`];
+  });
+}
+
 function mergeRules(primaryRules: ReverseRule[], candidateRules: ReverseRule[]) {
   const seen = new Set(primaryRules.map((currentRule) => `${currentRule.pattern.source}->${currentRule.wrong}`));
 
@@ -164,6 +209,103 @@ const BAKKWIDA_CONTRACTION_RULES = makeRulesFromPairs(
   { ruleGroup: "bakkwida_contraction" },
 );
 
+const ARTICLE_51_I_ONLY_ADVERBS = [
+  "가붓이",
+  "깨끗이",
+  "나붓이",
+  "느긋이",
+  "둥긋이",
+  "따뜻이",
+  "반듯이",
+  "버젓이",
+  "산뜻이",
+  "의젓이",
+  "가까이",
+  "고이",
+  "날카로이",
+  "대수로이",
+  "번거로이",
+  "많이",
+  "헛되이",
+  "겹겹이",
+  "번번이",
+  "일일이",
+  "집집이",
+  "틈틈이",
+] as const;
+
+const ARTICLE_51_CONTEXTUAL_I_ONLY_ADVERBS = [
+  "적이",
+] as const;
+
+const ARTICLE_51_HI_ONLY_ADVERBS = [
+  "극히",
+  "급히",
+  "딱히",
+  "속히",
+  "작히",
+  "족히",
+  "특히",
+  "엄격히",
+  "정확히",
+] as const;
+
+const ARTICLE_51_I_OR_HI_ADVERBS = [
+  "솔직히",
+  "가만히",
+  "간편히",
+  "나른히",
+  "무단히",
+  "각별히",
+  "소홀히",
+  "쓸쓸히",
+  "정결히",
+  "과감히",
+  "꼼꼼히",
+  "심히",
+  "열심히",
+  "급급히",
+  "답답히",
+  "섭섭히",
+  "공평히",
+  "능히",
+  "당당히",
+  "분명히",
+  "상당히",
+  "조용히",
+  "간소히",
+  "고요히",
+  "도저히",
+] as const;
+
+const ARTICLE_51_I_ONLY_ADVERB_RULES = makeStandaloneRulesFromPairs(
+  makeEndingPairs(ARTICLE_51_I_ONLY_ADVERBS, "이", "히"),
+  "맞춤법",
+  "끝음절이 '이'로만 나는 부사는 '-이'로 적어요.",
+  { ruleGroup: "article_51_i_only" },
+);
+
+const ARTICLE_51_CONTEXTUAL_I_ONLY_ADVERB_RULES = makeStandaloneRulesFromPairs(
+  makeEndingPairs(ARTICLE_51_CONTEXTUAL_I_ONLY_ADVERBS, "이", "히"),
+  "맞춤법",
+  "'적이'는 부사일 때 '-이'로 적지만, 명사 '적'에 조사가 붙은 말과 헷갈릴 수 있어요.",
+  { requiresContext: true, ruleGroup: "article_51_i_only_contextual" },
+);
+
+const ARTICLE_51_HI_ONLY_ADVERB_RULES = makeStandaloneRulesFromPairs(
+  makeEndingPairs(ARTICLE_51_HI_ONLY_ADVERBS, "히", "이"),
+  "맞춤법",
+  "끝음절이 '히'로 나는 부사는 '-히'로 적어요.",
+  { ruleGroup: "article_51_hi_only" },
+);
+
+const ARTICLE_51_I_OR_HI_ADVERB_RULES = makeStandaloneRulesFromPairs(
+  makeEndingPairs(ARTICLE_51_I_OR_HI_ADVERBS, "히", "이"),
+  "맞춤법",
+  "'이'나 '히'로 소리 나는 부사는 '-히'로 적어요.",
+  { ruleGroup: "article_51_i_or_hi" },
+);
+
 const BASE_REVERSE_RULES: ReverseRule[] = [
   rule("오랜만에", "오랫만에", "맞춤법", "'오랜만에'가 맞아요. '오랫만에'로 자주 헷갈려요."),
   rule("어이없다", "어의없다", "맞춤법", "'어이없다'가 맞아요. '어의없다'는 없는 말이에요."),
@@ -181,6 +323,10 @@ const BASE_REVERSE_RULES: ReverseRule[] = [
   ...DWAE_CONTRACTION_RULES,
   ...DOEDA_STEM_RULES,
   ...BAKKWIDA_CONTRACTION_RULES,
+  ...ARTICLE_51_I_ONLY_ADVERB_RULES,
+  ...ARTICLE_51_CONTEXTUAL_I_ONLY_ADVERB_RULES,
+  ...ARTICLE_51_HI_ONLY_ADVERB_RULES,
+  ...ARTICLE_51_I_OR_HI_ADVERB_RULES,
   rule("역할", "역활", "맞춤법", "'역할'이 맞아요. '역활'은 없는 말이에요."),
   rule("희한하다", "희안하다", "맞춤법", "'희한하다'가 맞아요. '희안하다'는 없는 말이에요."),
   rule("희한하", "희안하", "표준어", "'희한하다'가 맞아요. '희안하다'는 없는 말이에요."),
@@ -208,6 +354,7 @@ const BASE_REVERSE_RULES: ReverseRule[] = [
   rule("할게요", "할께요", "맞춤법", "'-ㄹ게요'가 맞아요. '-ㄹ께요'는 틀린 표기예요."),
   rule("할게", "할께", "맞춤법", "'-ㄹ게'가 맞아요. '-ㄹ께'는 틀린 표기예요."),
   rule("할 거", "할꺼", "맞춤법", "'할 거'가 맞아요. '할꺼'는 없는 표기예요."),
+  rule("띄어쓰기", "띠어쓰기", "맞춤법", "'띄어쓰기'가 맞아요. '띠어쓰기'로 적지 않아요."),
   rule("것 같다", "것같다", "띄어쓰기", "'것 같다'는 띄어 써요."),
   rule("것 같아", "것같아", "띄어쓰기", "'것 같아'는 띄어 써요."),
   rule("것 같", "거 같", "맞춤법", "'것 같다'가 맞아요. '거 같다'는 구어체 표현이에요."),
